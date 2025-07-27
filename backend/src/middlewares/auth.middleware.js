@@ -17,7 +17,7 @@ export const verifyjwt=async(req,res,next)=>{
             })
         }
 
-        const user=await User.findById(decoded._id);
+        const user=await User.findById(decoded.id);
         if(!user){
             return res.status(401).json({
                 message: "Unauthorized - user is missing"
