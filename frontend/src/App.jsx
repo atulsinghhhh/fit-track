@@ -1,3 +1,4 @@
+import { useState } from "react"; 
 import { Route, Routes } from "react-router"
 import Signup from "./pages/Signup"
 import Home from "./pages/Home"
@@ -7,13 +8,19 @@ import Login from "./pages/Login"
 import Workout from "./pages/Workout"
 import WorkoutId from "./pages/WorkoutId"
 import Workouts from "./pages/Workouts"
+// import DailySummary from "./components/DailySummary"
 
 
 function App() {
 
+  // const [selectedDate,setSelectedDate]=useState(
+  //     new Date().toISOString().split("T")[0]
+  // )
+
 
   return (
     <>
+    {/* <DailySummary selectedDate={selectedDate}/> */}
       <Routes>
         <Route path="/signup" element={<Signup/>}/>
         <Route path="/login" element={<Login/>}/>
