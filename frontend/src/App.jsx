@@ -5,6 +5,8 @@ import Onboard from "./pages/Onboard"
 import ProtectRoute from "./components/Protect"
 import Login from "./pages/Login"
 import Workout from "./pages/Workout"
+import WorkoutId from "./pages/WorkoutId"
+import Workouts from "./pages/Workouts"
 
 
 function App() {
@@ -19,9 +21,22 @@ function App() {
         <Route path="/onboard" element={<Onboard/>}/>
 
         {/* Protect Routes */}
+        
         <Route path="/workout" element={
           <ProtectRoute>
             <Workout/>
+          </ProtectRoute>
+        }/>
+
+        <Route path="/workout/:id" element={
+          <ProtectRoute>
+            <WorkoutId/>
+          </ProtectRoute>
+        }/>
+
+        <Route path="/workouts" element={
+          <ProtectRoute>
+            <Workouts/>
           </ProtectRoute>
         }/>
 
