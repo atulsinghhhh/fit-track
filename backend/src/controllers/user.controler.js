@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken"
+import uploadOnCloudinary from "../utilis/cloudinary.js";
 
 
 export const userSignup=async(req,res)=>{
@@ -150,21 +151,42 @@ export const userOnboard = async (req, res) => {
             });
         }
 
-        // Optional: Handle profile picture upload here if needed
+        const existingUser = await User.findById(req.user._id);
 
-        const updatedUser = await User.findByIdAndUpdate(
-            req.user._id,
-            { weight, height, age, dailyCalorieTarget, goal },
-            { new: true }
-        );
-
-        if (!updatedUser) {
+        if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
 
+        if (existingUser.weight || existingUser.height || existingUser.age || existingUser.dailyCalorieTarget || existingUser.goal) {
+            return res.status(400).json({
+                message: "User has already onboarded. Updates are not allowed."
+            });
+        }
+
+        const avatar = req.files?.profilePic?.[0];
+        let profilePicUrl = "";
+
+        if (avatar) {
+            const image = await uploadOnCloudinary(avatar.path);
+            if (!image?.secure_url) {
+                return res.status(401).json({ message: "Failed to upload avatar" });
+            }
+            profilePicUrl = image.secure_url;
+        }
+
+
+        existingUser.weight = weight;
+        existingUser.height = height;
+        existingUser.age = age;
+        existingUser.dailyCalorieTarget = dailyCalorieTarget;
+        existingUser.goal = goal;
+        if (profilePicUrl) existingUser.profilePic = profilePicUrl;
+
+        await existingUser.save();
+
         res.status(200).json({
             message: "User onboarded successfully",
-            user: updatedUser
+            user: existingUser
         });
 
     } catch (error) {
@@ -174,6 +196,8 @@ export const userOnboard = async (req, res) => {
         });
     }
 };
+
+
 
 
 export const getProfile=async(req,res)=>{
@@ -198,10 +222,55 @@ export const getProfile=async(req,res)=>{
     }
 }
 
-export const updatedProfile=async(req,res)=>{ // TODO: complete after some time
+export const updatedProfile = async (req, res) => {
     try {
-        
+        const userId = req.user._id; 
+
+        const { fullName, weight, height, goal, dailyCalorieTarget } = req.body; 
+
+        const avatar = req.files?.profilePic?.[0];
+        let imageUrl = "";
+
+        if (avatar) {
+            const image = await uploadOnCloudinary(avatar.path);
+            if (!image || !image.url) {
+                return res.status(401).json({
+                    message: "Failed to upload to Cloudinary"
+                });
+            }
+            imageUrl = image.secure_url;
+        }
+
+        const updated = {
+            fullName,
+            weight,
+            height,
+            dailyCalorieTarget,
+            goal,
+            ...(imageUrl && { profilePic: imageUrl }) 
+        };
+
+        const updatedDetails = await User.findByIdAndUpdate(
+            userId,
+            updated,
+            { new: true }
+        );
+
+        if (!updatedDetails) {
+            return res.status(404).json({
+                message: "User not found for update"
+            });
+        }
+
+        res.status(200).json({
+            message: "User successfully updated their profile",
+            user: updatedDetails
+        });
+
     } catch (error) {
-        
+        console.error("Profile update error:", error);
+        res.status(500).json({
+            message: "Failed to update profile"
+        });
     }
-}
+};
