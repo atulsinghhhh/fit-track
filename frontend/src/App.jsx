@@ -1,5 +1,5 @@
 import { useState } from "react"; 
-import { Route, Routes } from "react-router"
+import { Route, Routes, useLocation } from "react-router"
 import Signup from "./pages/Signup"
 import Home from "./pages/Home"
 import Onboard from "./pages/Onboard"
@@ -12,20 +12,21 @@ import Navbar from "./components/Navbar";
 import Foodlog from "./pages/Foodlog";
 import Nutrition from "./pages/Nutrition";
 import ProgressPage from "./pages/ProgressPage";
-// import DailySummary from "./components/DailySummary"
+import Profile from "./pages/Profile";
+
 
 
 function App() {
 
-  // const [selectedDate,setSelectedDate]=useState(
-  //     new Date().toISOString().split("T")[0]
-  // )
+  const location=useLocation();
+  const hidePanel=['/login','/signup','/onboard']
+  const shouldHideNavbar=!hidePanel.includes(location.pathname);
 
 
   return (
     <>
-    <Navbar/>
-    {/* <DailySummary selectedDate={selectedDate}/> */}
+      {shouldHideNavbar && <Navbar/>}
+
       <Routes>
         <Route path="/signup" element={<Signup/>}/>
         <Route path="/login" element={<Login/>}/>
@@ -67,6 +68,12 @@ function App() {
         <Route path="/progress" element={
           <ProtectRoute>
             <ProgressPage/>
+          </ProtectRoute>
+        }/>
+
+        <Route path="/profile" element={
+          <ProtectRoute>
+            <Profile/>
           </ProtectRoute>
         }/>
 

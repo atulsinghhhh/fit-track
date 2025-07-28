@@ -12,25 +12,51 @@ function Onboard() {
         age: user?.age || "",
         goal: user?.goal || "",
         height: user?.height || "",
-        dailyCalorieTarget: user?.dailyCalorieTarget || ""
+        dailyCalorieTarget: user?.dailyCalorieTarget || "",
+        profilePic: user?.profilePic || null
     });
+    const [preview,setPreview]=useState(null);
 
     const navigate=useNavigate();
 
-    const handleSubmit=async(e)=>{
-        e.preventDefault();
-        try {
-            const response=await axios.post(`${baseUrl}/auth/onboard`,formState,{
-                withCredentials: true
-            });
-            navigate("/login");
-            return response.data;
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
 
-        } catch (error) {
-            console.log(error);
+        if (file) {
+            setFormState({ ...formState, profilePic: file });
+            setPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const formData = new FormData();
+
+        formData.append("fullName", formState.fullName);
+        formData.append("weight", formState.weight);
+        formData.append("age", formState.age);
+        formData.append("goal", formState.goal);
+        formData.append("height", formState.height);
+        formData.append("dailyCalorieTarget", formState.dailyCalorieTarget);
+
+        if (formState.profilePic) {
+            formData.append("profilePic", formState.profilePic);
         }
 
+        const response = await axios.post(`${baseUrl}/auth/onboard`, formData, {
+            withCredentials: true,
+        });
+        console.log(response.data)
+
+        navigate("/login");
+        return response.data;
+    } catch (error) {
+        console.log("Upload Error:", error);
     }
+};
+
+
     return (
         <div className="min-h-screen bg-base-100 flex items-center justify-center p-4">
             <div className='card bg-base-200 w-full max-w-3xl shadow-xl'>
@@ -41,8 +67,27 @@ function Onboard() {
                         <div className='flex flex-col items-center justify-center space-y-4'>
                             {/* TODO: IMAGE PREVIEW */}
                             <div className="size-32 rounded-full bg-base-300 overflow-hidden">
-
+                                {preview ? (
+                                    <img
+                                    src={preview}
+                                    alt="Profile"
+                                    className="object-cover w-full h-full"
+                                    />
+                                ) : (
+                                    <div className="flex items-center justify-center h-full text-sm text-gray-500">
+                                    No Image
+                                    </div>
+                                )}
                             </div>
+
+                            {/* 🔽 File input shown clearly below preview circle */}
+                            <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="file-input file-input-bordered w-full max-w-xs"
+                            />
+
                             
                         </div>
 
