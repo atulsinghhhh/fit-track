@@ -10,6 +10,8 @@ import WorkoutId from "./pages/WorkoutId"
 import Workouts from "./pages/Workouts"
 import Navbar from "./components/Navbar";
 import Foodlog from "./pages/Foodlog";
+import Nutrition from "./pages/Nutrition";
+import ProgressPage from "./pages/ProgressPage";
 // import DailySummary from "./components/DailySummary"
 
 
@@ -52,9 +54,21 @@ function App() {
 
         <Route path="/food" element={
           <ProtectRoute>
-            {<Foodlog/>}
+            <Foodlog/>
           </ProtectRoute>
         } />
+
+        <Route path="/nutrition" element={
+          <ProtectRoute>
+            <Nutrition/>
+          </ProtectRoute>
+        }/>
+
+        <Route path="/progress" element={
+          <ProtectRoute>
+            <ProgressPage/>
+          </ProtectRoute>
+        }/>
 
 
       </Routes>

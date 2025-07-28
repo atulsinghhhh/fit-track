@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { workout } from "../models/workout.model.js";
 
 export const workoutlog=async(req,res)=>{
@@ -127,5 +128,46 @@ export const updatedWorkout=async(req,res)=>{
         res.status(500).json({
             message: "failed updated their workout log"
         })
+    }
+}
+
+export const getWeeklyWorkoutSummary = async (req, res) => {
+    try {
+        const { start } = req.query;
+        const userId = req.user._id;
+
+        const startDate = new Date(start + "T00:00:00.000Z");
+        const endDate = new Date(new Date(startDate).setDate(startDate.getDate() + 6));
+
+        const data = await workout.aggregate([
+            {
+                $match: {
+                    userId: new mongoose.Types.ObjectId(userId),
+                    createdAt: {
+                        $gte: startDate,
+                        $lte: endDate
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    CaloriesBurned: { $sum: "$CaloriesBurned" }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]);
+
+        res.status(200).json({
+            message: "Successfully fetched weekly workout summary",
+            data
+        });
+    } catch (error) {
+        console.error("Workout summary error:", error);
+        res.status(500).json({
+            message: "Failed to fetch weekly workout summary"
+        });
     }
 }

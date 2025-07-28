@@ -14,7 +14,7 @@ function Home() {
 
     return (
         <>
-        <div className='p-6'>
+        {/* <div className='p-6'>
             <button onClick={()=>setShowNutrition(true)} className='btn btn-primary '>
                 View Nutrition Summary
             </button>
@@ -24,7 +24,7 @@ function Home() {
                     < NutritionDashboard date={today} weekStart={startOfWeek}/>
                 </div>
             )}
-        </div>
+        </div> */}
         </>
     )
 }
