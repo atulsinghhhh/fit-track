@@ -39,7 +39,7 @@ function Navbar() {
                 {/* Center - Nav Links */}
                 <div className="flex-grow">
                     <ul className="flex justify-center space-x-6">
-                        <li><Link to="/workout" className="text-base font-medium">Workout</Link></li>
+                        <li><Link to="/workouts" className="text-base font-medium">Workout</Link></li>
                         <li><Link to="/food" className="text-base font-medium">Food</Link></li>
                         <li><Link to="/progress" className="text-base font-medium">Progress Track</Link></li>
                         <li><Link to="/nutrition" className="text-base font-medium">Nutrition</Link></li>

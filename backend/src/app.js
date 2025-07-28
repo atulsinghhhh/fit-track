@@ -7,6 +7,7 @@ import userRoutes from "./routes/user.route.js"
 import workoutRoutes from "./routes/workout.route.js"
 import foodRoutes from "./routes/food.route.js"
 import nutritionRoutes from "./routes/nutrition.route.js"
+import summaryRoutes from "./routes/summary.route.js"
 
 const app=express();
 
@@ -24,6 +25,7 @@ app.use("/api/auth",userRoutes);
 app.use("/api/workout",workoutRoutes)
 app.use("/api/food",foodRoutes)
 app.use("/api/nutrition",nutritionRoutes)
+app.use("/api/summary",summaryRoutes);
 
 
 

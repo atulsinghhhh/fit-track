@@ -119,3 +119,31 @@ export const updateFood=async(req,res)=>{
         })
     }
 }
+
+export const getMealsByDate=async(req,res)=>{
+    try {
+        const {date}=req.query
+        const userId=req.user._id
+
+        const startOfDay = new Date(`${date}T00:00:00.000Z`);
+        const endOfDay = new Date(`${date}T23:59:59.999Z`);
+
+        const meals=await Food.find({
+            userId,
+            createdAt: {
+                $gte: startOfDay,
+                $lte: endOfDay
+            }
+        })
+
+        res.status(200).json({
+            message: "successfully fetch today's meal",
+            meals
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            message: "failed to fetch the today meal"
+        })
+    }
+}

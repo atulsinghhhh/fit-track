@@ -171,3 +171,30 @@ export const getWeeklyWorkoutSummary = async (req, res) => {
         });
     }
 }
+
+export const getTodaysWorkout=async(req,res)=>{
+    try {
+        const { date } = req.query;
+        const userId=req.user._id
+
+        const start = new Date(`${date}T00:00:00.000Z`);
+        const end = new Date(`${date}T23:59:59.999Z`);
+
+
+        const workouts=await workout.find({userId,
+            createdAt: {
+                $gte: start,
+                $lte: end
+            }
+        });
+        res.status(200).json({
+            message: "successfully fetch the today workout",
+            workouts
+        })
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: "Today's workout fetch failed"
+        })
+    }
+}
