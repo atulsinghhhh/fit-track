@@ -14,10 +14,6 @@ const foodSchema=new mongoose.Schema({
         enum: ["breakfast", "lunch", "dinner", "snacks"],
         required: true
     },
-    quantity: {
-        type: String,
-        required: true
-    },
     calories: {
         type: Number,
         required: true

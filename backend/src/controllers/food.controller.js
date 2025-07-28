@@ -3,17 +3,18 @@ import { Food } from "../models/foodlog.model.js";
 export const createfood=async(req,res)=>{
     try {
         const userId=req.user._id
-        const {foodName,mealType,protein,fats,carbs,calories,quantity}=req.body
-        if(!foodName || !mealType || !protein || !fats || !calories || !carbs || !quantity){
+        const {foodName,mealType,protein,fats,carbs,calories}=req.body
+        if(!foodName || !mealType || !protein || !fats || !calories || !carbs ){
             return res.status(400).json({
                 message: "all fields are requireds"
             })
         }
+
         const foodDetails=await Food.create({
             ...req.body,
             userId
         });
-        console.log(foodDetails);
+        // console.log(foodDetails);
 
         res.status(201).json({
             message: "user successfully created their food",
@@ -34,8 +35,8 @@ export const getFoodsByDate=async(req,res)=>{
         const userId=req.user._id;
         const {date}=req.query
 
-        console.log("userId: ",userId);
-        console.log("date: ",date);
+        // console.log("userId: ",userId);
+        // console.log("date: ",date);
 
         if(!date){
             return res.status(401).json({
@@ -66,12 +67,20 @@ export const getFoodsByDate=async(req,res)=>{
 export const deleteFood=async(req,res)=>{
     try {
         const userId=req.user._id;
-        const deletedFood=await Food.deleteOne({_id: req.user.id,userId});
+        const { id } = req.params;
+
+        const deletedFood=await Food.deleteOne({_id:id,userId});
 
         if(!deletedFood){
             return res.status(401).json({
                 message: "food is not found"
             })
+        }
+
+        if (deletedFood.deletedCount === 0) {
+            return res.status(404).json({
+                message: "Food item not found or not authorized to delete",
+            });
         }
 
         res.status(201).json({

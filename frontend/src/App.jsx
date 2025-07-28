@@ -8,6 +8,8 @@ import Login from "./pages/Login"
 import Workout from "./pages/Workout"
 import WorkoutId from "./pages/WorkoutId"
 import Workouts from "./pages/Workouts"
+import Navbar from "./components/Navbar";
+import Foodlog from "./pages/Foodlog";
 // import DailySummary from "./components/DailySummary"
 
 
@@ -20,6 +22,7 @@ function App() {
 
   return (
     <>
+    <Navbar/>
     {/* <DailySummary selectedDate={selectedDate}/> */}
       <Routes>
         <Route path="/signup" element={<Signup/>}/>
@@ -46,6 +49,12 @@ function App() {
             <Workouts/>
           </ProtectRoute>
         }/>
+
+        <Route path="/food" element={
+          <ProtectRoute>
+            {<Foodlog/>}
+          </ProtectRoute>
+        } />
 
 
       </Routes>
