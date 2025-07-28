@@ -56,7 +56,7 @@ function Home() {
             });
             setTotals(response.data.totals); 
         } catch (error) {
-            console.error("Error fetching nutrition summary", error);
+            console.log("Error fetching nutrition summary", error);
         }
         };
 
@@ -74,24 +74,40 @@ function Home() {
             }
         }
 
-
-        fetchNutritionSummary();
         fetchTodaysWokout();
         fetchTodaysMeal();
-        fetchDailySummary()
+        fetchNutritionSummary();
+        fetchDailySummary();
     },[])
-
 
 
     return (
         <>
             <div className='p-4 min-h-screen'>
-                <header className='mb-4 flex justify-between items-center'>
+                <header className="flex justify-between items-center px-4 mb-6">
                     <div>
-                        <h1 className="text-2xl font-bold">{user?.fullName || ""}</h1>
-                        <p className="text-sm text-gray-500">{new Date().toLocaleDateString()}</p>
+                        <h1 className="text-3xl font-semibold tracking-tight">
+                            {user?.fullName || "Welcome"}
+                        </h1>
+                        <p className="text-sm ">
+                            {new Date().toLocaleDateString("en-US", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                        })}
+                        </p>
                     </div>
-                    {/* TODO: HERE SHOW THE PROFILE USER */}
+
+                    <div className="flex gap-4">
+                        <button onClick={() => navigate("/workout")} className="btn btn-primary">
+                            Add Workout
+                        </button>
+                        <button onClick={() => navigate("/food")} className="btn btn-primary">
+                            Add Food
+                        </button>
+                    </div>
+
                 </header>
 
                 {/* Summary Cards */}
@@ -140,14 +156,6 @@ function Home() {
                         </div>
                     </div>
                 </div>
-
-                {/* Quick Actions */}
-                <div className='mt-6 flex gap-4'>
-                    <button onClick={()=>navigate("")} className='btn btn-primary'>Add Workout</button>
-                    <button onClick={()=>navigate("")} className='btn btn-primary'>Add Food</button>
-                </div>
-
-
 
             </div>
         
