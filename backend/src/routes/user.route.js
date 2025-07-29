@@ -14,7 +14,11 @@ router.post("/onboard",verifyjwt,
     ,userOnboard)
 
 router.get("/me",verifyjwt,getProfile)
-router.put("/profile-update",verifyjwt,updatedProfile)
+router.put("/profile-update",verifyjwt,
+    upload.fields([{
+        name: 'profilePic',
+        maxCount:1
+}]),updatedProfile)
 
 
 export default router
