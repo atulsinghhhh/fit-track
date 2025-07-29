@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { authDataProvider } from '../Context/AuthContext'
+import React, { useContext, useEffect, useState } from 'react';
+import { authDataProvider } from '../Context/AuthContext';
 import axios from 'axios';
 import {
     Chart as ChartJS,
@@ -37,7 +37,7 @@ function ProgressPage() {
         } catch (error) {
             console.log("Error fetching weekly nutrition: ", error);
         }
-    }
+    };
 
     const fetchWeeklyWorkout = async () => {
         try {
@@ -48,9 +48,8 @@ function ProgressPage() {
         } catch (error) {
             console.log("Error fetching weekly workout: ", error);
         }
-    }
+    };
 
-    // Generate 7-day labels starting from the selected date
     const getWeekDates = (startDate) => {
         const start = new Date(startDate);
         const dates = [];
@@ -62,9 +61,22 @@ function ProgressPage() {
         return dates;
     };
 
+    const handleWeekChange = (days) => {
+        const current = new Date(startDate);
+        current.setDate(current.getDate() + days);
+
+        const today = new Date();
+        const maxDate = new Date(today);
+        maxDate.setHours(0, 0, 0, 0);
+
+        // Prevent navigating to future dates
+        if (current <= maxDate) {
+            setStartDate(current.toISOString().split("T")[0]);
+        }
+    };
+
     const weekLabels = getWeekDates(startDate);
 
-    // Normalize nutrition data
     const nutritionMap = Object.fromEntries(
         weeklyNutrition.map(entry => [entry._id, entry])
     );
@@ -76,7 +88,6 @@ function ProgressPage() {
         fats: nutritionMap[date]?.fats || 0
     }));
 
-    // Normalize workout data
     const workoutMap = Object.fromEntries(
         weeklyWorkout.map(entry => [entry._id, entry])
     );
@@ -133,6 +144,17 @@ function ProgressPage() {
     return (
         <div className='p-6 space-y-10'>
             <h2 className='text-2xl font-bold text-center'>Your Weekly Progress</h2>
+
+            {/* Week navigation */}
+            <div className="flex justify-center gap-4 my-4">
+                <button className="btn btn-outline" onClick={() => handleWeekChange(-7)}>
+                    ⬅️ Previous Week
+                </button>
+                <span className="text-lg font-medium">{weekLabels[0]} → {weekLabels[6]}</span>
+                <button className="btn btn-outline" onClick={() => handleWeekChange(7)}>
+                    Next Week ➡️
+                </button>
+            </div>
 
             {/* Nutrition chart */}
             <div>

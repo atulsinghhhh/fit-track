@@ -48,9 +48,6 @@ function Profile() {
     try {
       const response = await axios.put(`${baseUrl}/auth/profile-update`, form, {
         withCredentials: true,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
       });
 
       console.log('Profile updated:', response.data);
