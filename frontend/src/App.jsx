@@ -13,6 +13,7 @@ import Foodlog from "./pages/Foodlog";
 import Nutrition from "./pages/Nutrition";
 import ProgressPage from "./pages/ProgressPage";
 import Profile from "./pages/Profile";
+import Foods from "./pages/Foods";
 
 
 
@@ -74,6 +75,12 @@ function App() {
         <Route path="/profile" element={
           <ProtectRoute>
             <Profile/>
+          </ProtectRoute>
+        }/>
+
+        <Route path="/foods" element={
+          <ProtectRoute>
+            <Foods/>
           </ProtectRoute>
         }/>
 

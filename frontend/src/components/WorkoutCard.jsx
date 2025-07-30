@@ -15,7 +15,7 @@ function WorkoutCard({ workout }) {
             )}
                 {workout.CaloriesBurned && (
                 <p className="text-sm text-gray-500">
-                    Calories Burned: <span className="font-medium">{workout.CaloriesBurned}</span>
+                    Calories Burned: <span className="font-medium">{workout.CaloriesBurned} kcal</span>
                 </p>
                 )}
         </div>

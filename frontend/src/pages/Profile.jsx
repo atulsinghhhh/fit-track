@@ -160,13 +160,13 @@ function Profile() {
                   type="file"
                   name="profilePic"
                   onChange={handleChange}
-                  className="file-input file-input-bordered w-full"
+                  className="file-input file-input-bordered "
                 />
               </div>
             )}
 
             {isEditing && (
-              <button type="submit" className="btn btn-primary w-full mt-4">
+              <button type="submit" className="btn btn-primary mt-4">
                 Save 
               </button>
             )}

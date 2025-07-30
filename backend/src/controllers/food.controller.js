@@ -147,3 +147,19 @@ export const getMealsByDate=async(req,res)=>{
         })
     }
 }
+
+export const getAllFood=async(req,res)=>{
+    try {
+        const userId=req.user._id;
+        const foods=await Food.find({userId}).sort({createdAt: -1});
+
+        res.status(200).json({
+            message: "Successfully fetch all food items that user is created",
+            foods
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "failed to fetch the all food items"
+        })
+    }
+}

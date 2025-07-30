@@ -100,11 +100,11 @@ function Home() {
                     </div>
 
                     <div className="flex gap-4">
-                        <button onClick={() => navigate("/workout")} className="btn btn-primary">
-                            Add Workout
+                        <button onClick={() => navigate("/workouts")} className="btn btn-primary">
+                            View Workout
                         </button>
-                        <button onClick={() => navigate("/food")} className="btn btn-primary">
-                            Add Food
+                        <button onClick={() => navigate("/foods")} className="btn btn-primary">
+                            View Food
                         </button>
                     </div>
 
