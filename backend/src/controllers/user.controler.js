@@ -32,12 +32,12 @@ export const userSignup=async(req,res)=>{
         })
 
         const token = jwt.sign(
-            { _id: userDetails._id },
+            { id: userDetails._id },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
 
-        // console.log(token)
+        console.log(token)
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -60,6 +60,7 @@ export const userSignup=async(req,res)=>{
 
 export const userLogin=async(req,res)=>{
     try {
+        console.log("REQ BODY:", req.body);
         const {email,password}=req.body;
 
         if(!email || !password){
@@ -67,6 +68,7 @@ export const userLogin=async(req,res)=>{
                 message: "all fields are required !"
             })
         }
+        console.log(req.body);
         
         const user=await User.findOne({email});
         if(!user){
@@ -75,7 +77,7 @@ export const userLogin=async(req,res)=>{
             })
         }
 
-        // console.log(user);
+        console.log(user);
 
         const isMatch=await bcrypt.compare(password,user.password);
         if(!isMatch){
@@ -106,7 +108,7 @@ export const userLogin=async(req,res)=>{
             { expiresIn: "7d" }
         );
 
-        // console.log(token)
+        console.log(token)
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -151,7 +153,10 @@ export const userOnboard = async (req, res) => {
             });
         }
 
+        // console.log(req.body);
+
         const existingUser = await User.findById(req.user._id);
+        console.log(existingUser);
 
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
@@ -165,6 +170,7 @@ export const userOnboard = async (req, res) => {
 
         const avatar = req.files?.profilePic?.[0];
         let profilePicUrl = "";
+        // console.log(avatar);
 
         if (avatar) {
             const image = await uploadOnCloudinary(avatar.path);
@@ -173,6 +179,7 @@ export const userOnboard = async (req, res) => {
             }
             profilePicUrl = image.secure_url;
         }
+        // console.log(profilePicUrl);
 
 
         existingUser.weight = weight;

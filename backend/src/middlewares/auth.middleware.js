@@ -16,6 +16,7 @@ export const verifyjwt=async(req,res,next)=>{
                 message: "Unauthorized - invalid credentials"
             })
         }
+        // console.log(decoded);
 
         const user=await User.findById(decoded.id);
         if(!user){
@@ -23,6 +24,7 @@ export const verifyjwt=async(req,res,next)=>{
                 message: "Unauthorized - user is missing"
             })
         }
+        // console.log("current user: ",user);
 
         req.user=user;
         next();
