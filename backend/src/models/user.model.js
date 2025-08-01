@@ -33,6 +33,11 @@ const userSchema=new mongoose.Schema({
     },
     dailyCalorieTarget: {
         type: String
+    },
+    gender: {
+        type: String,
+        enum: ['male','female','others'],
+        default: 'male'
     }
 },{timestamps: true});
 

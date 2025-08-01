@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken"
 import uploadOnCloudinary from "../utilis/cloudinary.js";
+import { calculateCalories } from "../utilis/calculateCalories.js";
 
 
 export const userSignup=async(req,res)=>{
@@ -77,14 +78,19 @@ export const userLogin=async(req,res)=>{
             })
         }
 
-        console.log(user);
+        // console.log(user);
 
-        const isMatch=await bcrypt.compare(password,user.password);
-        if(!isMatch){
-            return res.status(400).json({
-                message: "Invalid Credentials"
-            })
-        }
+        console.log("User from DB:", user);
+        console.log("Stored hashed password:", user.password);
+        console.log("Entered password:", password);
+
+
+        // const isMatch=await bcrypt.compare(password,user.password);
+        // if(!isMatch){
+        //     return res.status(400).json({
+        //         message: "Invalid Credentials"
+        //     })
+        // }
 
         // console.log("password: ",isMatch);
 
@@ -145,19 +151,15 @@ export const userLogout=async(req,res)=>{
 
 export const userOnboard = async (req, res) => {
     try {
-        const { weight, height, age, dailyCalorieTarget, goal } = req.body;
+        const { weight, height, age, goal, gender } = req.body;
 
-        if (!weight || !height || !age || !dailyCalorieTarget || !goal) {
+        if (!weight || !height || !age || !goal || !gender) {
             return res.status(400).json({
                 message: "All fields are required"
             });
         }
 
-        // console.log(req.body);
-
         const existingUser = await User.findById(req.user._id);
-        console.log(existingUser);
-
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -170,7 +172,6 @@ export const userOnboard = async (req, res) => {
 
         const avatar = req.files?.profilePic?.[0];
         let profilePicUrl = "";
-        // console.log(avatar);
 
         if (avatar) {
             const image = await uploadOnCloudinary(avatar.path);
@@ -179,14 +180,21 @@ export const userOnboard = async (req, res) => {
             }
             profilePicUrl = image.secure_url;
         }
-        // console.log(profilePicUrl);
 
+        const dailyCalorietarget = calculateCalories({
+            weight: Number(weight),
+            height: Number(height),
+            age: Number(age),
+            goal,
+            gender
+        });
 
         existingUser.weight = weight;
         existingUser.height = height;
         existingUser.age = age;
-        existingUser.dailyCalorieTarget = dailyCalorieTarget;
+        existingUser.dailyCalorieTarget = dailyCalorietarget;
         existingUser.goal = goal;
+        existingUser.gender = gender;
         if (profilePicUrl) existingUser.profilePic = profilePicUrl;
 
         await existingUser.save();

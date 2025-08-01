@@ -1,27 +1,26 @@
-import React, { useContext, useState } from 'react'
-import { authDataProvider } from '../Context/AuthContext'
+import React, { useContext, useState } from 'react';
+import { authDataProvider } from '../Context/AuthContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 
 function Onboard() {
-    const {user,baseUrl}=useContext(authDataProvider);
+    const { user, baseUrl } = useContext(authDataProvider);
 
-    const [formState,setFormState]=useState({
+    const [formState, setFormState] = useState({
         fullName: user?.fullName || "",
         weight: user?.weight || "",
         age: user?.age || "",
         goal: user?.goal || "",
         height: user?.height || "",
-        dailyCalorieTarget: user?.dailyCalorieTarget || "",
-        profilePic: user?.profilePic || null
+        profilePic: user?.profilePic || null,
+        gender: user?.gender || ""
     });
-    const [preview,setPreview]=useState(null);
 
-    const navigate=useNavigate();
+    const [preview, setPreview] = useState(null);
+    const navigate = useNavigate();
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-
         if (file) {
             setFormState({ ...formState, profilePic: file });
             setPreview(URL.createObjectURL(file));
@@ -29,33 +28,30 @@ function Onboard() {
     };
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        const formData = new FormData();
+        e.preventDefault();
+        try {
+            const formData = new FormData();
+            formData.append("fullName", formState.fullName);
+            formData.append("weight", formState.weight);
+            formData.append("age", formState.age);
+            formData.append("goal", formState.goal);
+            formData.append("height", formState.height);
+            formData.append("gender", formState.gender);
 
-        formData.append("fullName", formState.fullName);
-        formData.append("weight", formState.weight);
-        formData.append("age", formState.age);
-        formData.append("goal", formState.goal);
-        formData.append("height", formState.height);
-        formData.append("dailyCalorieTarget", formState.dailyCalorieTarget);
+            if (formState.profilePic) {
+                formData.append("profilePic", formState.profilePic);
+            }
 
-        if (formState.profilePic) {
-            formData.append("profilePic", formState.profilePic);
+            const response = await axios.post(`${baseUrl}/auth/onboard`, formData, {
+                withCredentials: true,
+            });
+
+            console.log(response.data);
+            navigate("/login");
+        } catch (error) {
+            console.log("Upload Error:", error);
         }
-
-        const response = await axios.post(`${baseUrl}/auth/onboard`, formData, {
-            withCredentials: true,
-        });
-        console.log(response.data)
-
-        navigate("/login");
-        return response.data;
-    } catch (error) {
-        console.log("Upload Error:", error);
-    }
-};
-
+    };
 
     return (
         <div className="min-h-screen bg-base-100 flex items-center justify-center p-4">
@@ -65,30 +61,26 @@ function Onboard() {
 
                     <form onSubmit={handleSubmit} className='space-y-6'>
                         <div className='flex flex-col items-center justify-center space-y-4'>
-                            {/* TODO: IMAGE PREVIEW */}
                             <div className="size-32 rounded-full bg-base-300 overflow-hidden">
                                 {preview ? (
                                     <img
-                                    src={preview}
-                                    alt="Profile"
-                                    className="object-cover w-full h-full"
+                                        src={preview}
+                                        alt="Profile"
+                                        className="object-cover w-full h-full"
                                     />
                                 ) : (
                                     <div className="flex items-center justify-center h-full text-sm text-gray-500">
-                                    No Image
+                                        No Image
                                     </div>
                                 )}
                             </div>
 
-                            {/* 🔽 File input shown clearly below preview circle */}
                             <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="file-input file-input-bordered w-full max-w-xs"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="file-input file-input-bordered w-full max-w-xs"
                             />
-
-                            
                         </div>
 
                         <div className="form-control">
@@ -98,40 +90,37 @@ function Onboard() {
                             <input
                                 type="text"
                                 value={formState.fullName}
-                                onChange={(e)=>setFormState({...formState,fullName: e.target.value})}
+                                onChange={(e) => setFormState({ ...formState, fullName: e.target.value })}
                                 className="input input-bordered w-full"
-                                placeholder="enter full name"
+                                placeholder="Enter full name"
                             />
                         </div>
 
                         <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-                            {/* weight */}
                             <div className='form-control'>
                                 <label className='label'>
-                                    <span className='label-text mb-2'>Weight</span>
+                                    <span className='label-text mb-2'>Weight (kg)</span>
                                 </label>
                                 <input
                                     type='text'
                                     value={formState.weight}
-                                    onChange={(e)=>setFormState({...formState,weight: e.target.value})}
+                                    onChange={(e) => setFormState({ ...formState, weight: e.target.value })}
                                     className='input input-bordered w-full'
-                                    placeholder='enter your current weight'
+                                    placeholder='Enter weight'
                                 />
                             </div>
-                            {/* height */}
                             <div className='form-control'>
                                 <label className='label'>
-                                    <span className='label-text mb-2'>Height</span>
+                                    <span className='label-text mb-2'>Height (cm)</span>
                                 </label>
                                 <input
                                     type='text'
                                     value={formState.height}
-                                    onChange={(e)=>setFormState({...formState,height: e.target.value})}
+                                    onChange={(e) => setFormState({ ...formState, height: e.target.value })}
                                     className='input input-bordered w-full'
-                                    placeholder='enter your current height'
+                                    placeholder='Enter height'
                                 />
                             </div>
-                            {/* age */}
                             <div className='form-control'>
                                 <label className='label'>
                                     <span className='label-text mb-2'>Age</span>
@@ -139,9 +128,9 @@ function Onboard() {
                                 <input
                                     type='text'
                                     value={formState.age}
-                                    onChange={(e)=>setFormState({...formState,age: e.target.value})}
+                                    onChange={(e) => setFormState({ ...formState, age: e.target.value })}
                                     className='input input-bordered w-full'
-                                    placeholder='enter your current height'
+                                    placeholder='Enter age'
                                 />
                             </div>
                         </div>
@@ -153,7 +142,7 @@ function Onboard() {
                             <select
                                 name='goal'
                                 value={formState.goal}
-                                onChange={(e)=>setFormState({...formState,goal:e.target.value})}
+                                onChange={(e) => setFormState({ ...formState, goal: e.target.value })}
                                 className='select select-bordered w-full'
                             >
                                 <option value="">Select</option>
@@ -165,27 +154,29 @@ function Onboard() {
 
                         <div className='form-control'>
                             <label className='label'>
-                                <span className='label-text mb-2'>TargetCalories</span>
+                                <span className='label-text mb-2'>Gender</span>
                             </label>
-                            <input
-                                type='text'
-                                value={formState.dailyCalorieTarget}
-                                onChange={(e)=>setFormState({...formState,dailyCalorieTarget:e.target.value})}
-                                className='input input-bordered w-full'
-                                placeholder='enter your daily calories'
-                            />
+                            <select
+                                name='gender'
+                                value={formState.gender}
+                                onChange={(e) => setFormState({ ...formState, gender: e.target.value })}
+                                className='select select-bordered w-full'
+                            >
+                                <option value="">Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="others">Others</option>
+                            </select>
                         </div>
 
-                        <button type="submit" className="btn btn-primary w-full" >
+                        <button type="submit" className="btn btn-primary w-full">
                             Onboard
                         </button>
                     </form>
                 </div>
-
             </div>
-
         </div>
-    )
+    );
 }
 
-export default Onboard
+export default Onboard;
