@@ -61,7 +61,7 @@ export const userSignup=async(req,res)=>{
 
 export const userLogin=async(req,res)=>{
     try {
-        console.log("REQ BODY:", req.body);
+        // console.log("REQ BODY:", req.body);
         const {email,password}=req.body;
 
         if(!email || !password){
@@ -69,7 +69,7 @@ export const userLogin=async(req,res)=>{
                 message: "all fields are required !"
             })
         }
-        console.log(req.body);
+        // console.log(req.body);
         
         const user=await User.findOne({email});
         if(!user){
@@ -80,17 +80,19 @@ export const userLogin=async(req,res)=>{
 
         // console.log(user);
 
-        console.log("User from DB:", user);
-        console.log("Stored hashed password:", user.password);
-        console.log("Entered password:", password);
+        // console.log("User from DB:", user);
+        // console.log("Stored hashed password:", user.password);
+        // console.log("Entered password:", password);
 
 
-        // const isMatch=await bcrypt.compare(password,user.password);
-        // if(!isMatch){
-        //     return res.status(400).json({
-        //         message: "Invalid Credentials"
-        //     })
-        // }
+        const isMatch=await bcrypt.compare(password,user.password);
+        if(!isMatch){
+            return res.status(400).json({
+                message: "Invalid Credentials"
+            })
+        }
+
+        console.log("Password match:", isMatch);
 
         // console.log("password: ",isMatch);
 
